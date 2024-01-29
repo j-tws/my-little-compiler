@@ -17,6 +17,24 @@ module.exports = function tokenizer(input) {
       continue
     }
 
+    if (char === '='){
+      tokens.push({
+        type: 'assignmentOperator',
+        value: char
+      })
+      current++
+      continue
+    }
+
+    if (char === "'"){
+      tokens.push({
+        type: 'singleQuote',
+        value: char
+      })
+      current++
+      continue
+    }
+
     if (LETTERS.test(char)){
       let value = ''
       while (LETTERS.test(char)){
