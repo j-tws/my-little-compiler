@@ -11,6 +11,34 @@ module.exports = function parser(tokens) {
       }
     }
 
+    if (token.type === 'name' && tokens[current + 1].type === 'assignmentOperator') {
+      const variable = {
+        type: 'LocalVariable',
+        name: token.value,
+      }
+
+      current += 2
+      token = tokens[current]
+
+      let string = ''
+      if (token.type === 'singleQuote'){
+        token = tokens[++current]
+        while (token.value !== "'"){
+          string += token.value
+          if (tokens[current + 1] !== "'"){
+            string += ' '
+          }
+          token = tokens[++current]
+        }
+        variable.value = {
+          type: 'string',
+          value: string
+        }
+      }
+
+      return variable
+    }
+
     if (token.type === 'parenthesis' && token.value === '('){
       token = tokens[++current]
       const expression = {
@@ -35,6 +63,6 @@ module.exports = function parser(tokens) {
     type: 'Program',
     body: [walk()]
   }
-
+  console.log(ast)
   return ast
 }

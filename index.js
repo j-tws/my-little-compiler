@@ -1,4 +1,5 @@
 const compiler = require('./compiler')
-const input = "string = 'hello'"
+const input = "text = 'hello world'"
+// const input = "(add 2 (sub 4 3))"
 const output = compiler(input)
 console.log(JSON.stringify(output, null, 2))

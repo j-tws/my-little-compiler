@@ -8,9 +8,9 @@ test('it compile the example correctly', () => {
 })
 
 describe('Ruby to JS compiler', () => {
-  is('should correctly compile simple variable assignment', () => {
-    const rubyCode = "string = 'hello'"
-    const jsCode = "let string = 'hello'"
+  is('should correctly compile simple string variable assignment', () => {
+    const rubyCode = "text = 'hello world'"
+    const jsCode = "let text = 'hello world'"
     
     expect(compiler(input)).toBe(output)
   })
