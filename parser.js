@@ -1,6 +1,5 @@
 module.exports = function parser(tokens) {
   let current = 0
-  console.log(tokens)
   const walk = () => {
     let token = tokens[current]
     if (token.type === 'number') {
@@ -25,7 +24,7 @@ module.exports = function parser(tokens) {
         token = tokens[++current]
         while (token.value !== "'"){
           string += token.value
-          if (tokens[current + 1] !== "'"){
+          if (tokens[current + 1].value !== "'"){
             string += ' '
           }
           token = tokens[++current]

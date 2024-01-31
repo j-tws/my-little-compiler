@@ -8,10 +8,19 @@ test('it compile the example correctly', () => {
 })
 
 describe('Ruby to JS compiler', () => {
-  is('should correctly compile simple string variable assignment', () => {
+  it('should correctly compile simple string variable assignment', () => {
     const rubyCode = "text = 'hello world'"
     const jsCode = "let text = 'hello world'"
     
-    expect(compiler(input)).toBe(output)
+    expect(compiler(rubyCode)).toBe(jsCode)
   })
+
+  it('should correctly compile simple integer variable assignment', () => {
+    const rubyCode = "number = 50"
+    const jsCode = "let number = 50"
+    
+    expect(compiler(rubyCode)).toBe(jsCode)
+  })
+
+
 })

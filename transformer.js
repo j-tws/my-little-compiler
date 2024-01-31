@@ -33,8 +33,14 @@ module.exports = function transformer(originalAST) {
         }
       }
       prevPosition.push(expression)
+    },
+    LocalVariable(node){
+      position.push({
+        type: 'LetVariableDeclaration',
+        name: node.name,
+        value: node.value
+      })
     }
   })
-
   return jsAST
 }

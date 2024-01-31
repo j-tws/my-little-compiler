@@ -11,6 +11,9 @@ module.exports = function generateCode(node){
   if (node.type === 'ExpressionStatement') {
     return `${generateCode(node.expression)};`
   }
+  if (node.type === 'LetVariableDeclaration') {
+    return `let ${node.name} = '${node.value.value}'`
+  }
   if (node.type === 'Program') {
     return node.body.map(generateCode).join('\n');
   }
