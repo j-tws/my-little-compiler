@@ -12,7 +12,11 @@ module.exports = function generateCode(node){
     return `${generateCode(node.expression)};`
   }
   if (node.type === 'LetVariableDeclaration') {
-    return `let ${node.name} = '${node.value.value}'`
+    if (node.value.type === 'string'){
+      return `let ${node.name} = '${node.value.value}'`
+    } else {
+      return `let ${node.name} = ${node.value.value}`
+    }
   }
   if (node.type === 'Program') {
     return node.body.map(generateCode).join('\n');

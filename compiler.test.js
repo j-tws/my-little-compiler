@@ -22,5 +22,4 @@ describe('Ruby to JS compiler', () => {
     expect(compiler(rubyCode)).toBe(jsCode)
   })
 
-
 })

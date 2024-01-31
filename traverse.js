@@ -1,8 +1,8 @@
 module.exports = function traverse(ast, visitors){
   function walkNode(node, parent){
     const method = visitors[node.type]
-    console.log('method:', method)
-    console.log('node.type:', node.type)
+    // console.log('method:', method)
+    // console.log('node.type:', node.type)
 
     if (method) {
       method(node, parent)

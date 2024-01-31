@@ -1,6 +1,7 @@
 module.exports = function parser(tokens) {
   let current = 0
   const walk = () => {
+    console.log(tokens)
     let token = tokens[current]
     if (token.type === 'number') {
       current++
@@ -19,8 +20,8 @@ module.exports = function parser(tokens) {
       current += 2
       token = tokens[current]
 
-      let string = ''
       if (token.type === 'singleQuote'){
+        let string = ''
         token = tokens[++current]
         while (token.value !== "'"){
           string += token.value
@@ -32,6 +33,13 @@ module.exports = function parser(tokens) {
         variable.value = {
           type: 'string',
           value: string
+        }
+      }
+
+      if (token.type === 'number'){
+        variable.value = {
+          type: 'number',
+          value: token.value,
         }
       }
 
