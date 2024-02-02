@@ -1,8 +1,6 @@
 module.exports = function traverse(ast, visitors){
   function walkNode(node, parent){
     const method = visitors[node.type]
-    // console.log('method:', method)
-    // console.log('node.type:', node.type)
 
     if (method) {
       method(node, parent)
@@ -12,6 +10,8 @@ module.exports = function traverse(ast, visitors){
       walkNodes(node.body, node)
     } else if (node.type === 'CallExpression') {
       walkNodes(node.params, node)
+    } else if (node.type === 'LocalVariable') {
+      walkNodes(node.declarations, node)
     }
   }
 

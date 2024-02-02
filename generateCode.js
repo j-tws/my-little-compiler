@@ -2,6 +2,9 @@ module.exports = function generateCode(node){
   if (node.type === 'NumericLiteral') {
     return node.value
   }
+  if (node.type === 'StringLiteral') {
+    return `'${node.value}'`
+  }
   if (node.type === 'Identifier') {
     return node.name
   }
@@ -11,12 +14,8 @@ module.exports = function generateCode(node){
   if (node.type === 'ExpressionStatement') {
     return `${generateCode(node.expression)};`
   }
-  if (node.type === 'LetVariableDeclaration') {
-    if (node.value.type === 'string'){
-      return `let ${node.name} = '${node.value.value}'`
-    } else {
-      return `let ${node.name} = ${node.value.value}`
-    }
+  if (node.type === 'VariableDeclarator') {
+    return `let ${node.name} = ${node.declarations.map(generateCode)}`
   }
   if (node.type === 'Program') {
     return node.body.map(generateCode).join('\n');

@@ -15,6 +15,12 @@ module.exports = function transformer(originalAST) {
         value: node.value
       })
     },
+    StringLiteral(node) {
+      position.push({
+        type: 'StringLiteral',
+        value: node.value,
+      })
+    },
     CallExpression(node, parent) {
       let expression = {
         type: 'CallExpression',
@@ -35,11 +41,14 @@ module.exports = function transformer(originalAST) {
       prevPosition.push(expression)
     },
     LocalVariable(node){
-      position.push({
-        type: 'LetVariableDeclaration',
+      let variable = {
+        type: 'VariableDeclarator',
         name: node.name,
-        value: node.value
-      })
+        declarations: []
+      }
+
+      position.push(variable)
+      position = variable.declarations
     }
   })
   return jsAST
