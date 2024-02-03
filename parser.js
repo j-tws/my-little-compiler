@@ -1,5 +1,6 @@
 module.exports = function parser(tokens) {
   let current = 0
+  console.log('tokens:', tokens)
   const walk = () => {
     console.log(tokens)
     let token = tokens[current]
@@ -30,6 +31,34 @@ module.exports = function parser(tokens) {
       }
     }
 
+    if (token.type === 'doubleQuote'){
+      const templateLiterals = {
+        type: 'TemplateLiteral',
+        values: []
+      }
+    }
+
+    if (token.type === 'stringInterpolation'){
+      const interpolation = {
+        type: 'StringInterpolation',
+        expressions: []
+      }
+
+      current += 2
+      token = tokens[current]
+
+      while (token.value !== '{'){
+        if (token.type === 'name'){
+          interpolation.expressions.push({
+            type: 'EmbeddedExpresions',
+            value: token.value
+          })
+        }
+      }
+
+      return interpolation
+    }
+
     if (token.type === 'name' && tokens[current + 1].type === 'assignmentOperator') {
       const variable = {
         type: 'LocalVariable',
@@ -47,30 +76,6 @@ module.exports = function parser(tokens) {
       current++
       return variable
 
-      // if (token.type === 'singleQuote'){
-      //   let string = ''
-      //   token = tokens[++current]
-      //   while (token.value !== "'"){
-      //     string += token.value
-      //     if (tokens[current + 1].value !== "'"){
-      //       string += ' '
-      //     }
-      //     token = tokens[++current]
-      //   }
-      //   variable.value = {
-      //     type: 'string',
-      //     value: string
-      //   }
-      // }
-
-      // if (token.type === 'number'){
-      //   variable.value = {
-      //     type: 'number',
-      //     value: token.value,
-      //   }
-      // }
-
-      // return variable
     }
 
     if (token.type === 'parenthesis' && token.value === '('){

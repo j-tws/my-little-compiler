@@ -22,4 +22,10 @@ describe('Ruby to JS compiler', () => {
     expect(compiler(rubyCode)).toBe(jsCode)
   })
 
+  it('should correctly compile string interpolation variable assignment', () => {
+    const rubyCode = `greeting = "hello #{name}"`
+    const jsCode = "let greeting = `hello ${name}`"
+    
+    expect(compiler(rubyCode)).toBe(jsCode)
+  })
 })

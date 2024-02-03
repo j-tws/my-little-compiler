@@ -26,6 +26,33 @@ module.exports = function tokenizer(input) {
       continue
     }
 
+    if (char === '#' && input[current + 1] === '{'){
+      tokens.push({
+        type: 'stringInterpolation',
+        value: char
+      })
+      current++
+      continue
+    }
+
+    if (char === '{' || char === '}'){
+      tokens.push({
+        type: 'parenthesis',
+        value: char
+      })
+      current++
+      continue
+    }
+
+    if (char === `"`){
+      tokens.push({
+        type: 'doubleQuote',
+        value: char
+      })
+      current++
+      continue
+    }
+
     if (char === "'"){
       tokens.push({
         type: 'singleQuote',
