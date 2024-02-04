@@ -1,8 +1,7 @@
 module.exports = function parser(tokens) {
   let current = 0
-  console.log('tokens:', tokens)
+  let insideTemplateLiteral = false
   const walk = () => {
-    console.log(tokens)
     let token = tokens[current]
     if (token.type === 'number') {
       current++
@@ -31,14 +30,36 @@ module.exports = function parser(tokens) {
       }
     }
 
+    if (token.type === 'name' && insideTemplateLiteral){
+      return {
+        type: 'StringLiteral',
+        value: token.value,
+      }
+    }
+
     if (token.type === 'doubleQuote'){
       const templateLiterals = {
         type: 'TemplateLiteral',
         values: []
       }
+
+      token = tokens[++current]
+      insideTemplateLiteral = true
+
+      while (token.value !== `"`){
+        templateLiterals.values.push(walk())
+        current++
+        token = tokens[current]
+      }
+      current++
+      insideTemplateLiteral = false
+      
+      return templateLiterals
     }
 
     if (token.type === 'stringInterpolation'){
+      insideTemplateLiteral = true
+
       const interpolation = {
         type: 'StringInterpolation',
         expressions: []
@@ -47,14 +68,16 @@ module.exports = function parser(tokens) {
       current += 2
       token = tokens[current]
 
-      while (token.value !== '{'){
+      while (token.value !== '}'){
         if (token.type === 'name'){
           interpolation.expressions.push({
             type: 'EmbeddedExpresions',
             value: token.value
           })
         }
+        token = tokens[++current]
       }
+      insideTemplateLiteral = false
 
       return interpolation
     }
@@ -75,7 +98,6 @@ module.exports = function parser(tokens) {
       }
       current++
       return variable
-
     }
 
     if (token.type === 'parenthesis' && token.value === '('){
