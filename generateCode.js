@@ -3,6 +3,7 @@ module.exports = function generateCode(node){
     return node.value
   }
   if (node.type === 'StringLiteral') {
+    console.log(node)
     return `'${node.value}'`
   }
   if (node.type === 'Identifier') {
@@ -19,5 +20,21 @@ module.exports = function generateCode(node){
   }
   if (node.type === 'Program') {
     return node.body.map(generateCode).join('\n');
+  }
+  if (node.type === 'TemplateLiteral') {
+    let output = ''
+    node.values.forEach((value, index) => {
+      if (value.type === 'StringLiteral'){
+        output += value.value
+        if (node.values[index + 1]) output += ' '
+      } else {
+        let interpolation = '${'
+        value.expressions.forEach(expression => interpolation += expression.value)
+        interpolation += '}'
+        output += interpolation
+        if (node.values[index + 1]) output += ' '
+      }
+    })
+    return '`' + output + '`'
   }
 }

@@ -71,7 +71,7 @@ module.exports = function parser(tokens) {
       while (token.value !== '}'){
         if (token.type === 'name'){
           interpolation.expressions.push({
-            type: 'EmbeddedExpresions',
+            type: 'EmbeddedExpression',
             value: token.value
           })
         }

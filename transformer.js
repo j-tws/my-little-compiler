@@ -49,6 +49,30 @@ module.exports = function transformer(originalAST) {
 
       position.push(variable)
       position = variable.declarations
+    },
+    TemplateLiteral(){
+      let template = {
+        type: 'TemplateLiteral',
+        values: []
+      }
+
+      position.push(template)
+      position = template.values
+    },
+    StringInterpolation(){
+      let interpolation = {
+        type: 'StringInterpolation',
+        expressions: []
+      }
+
+      position.push(interpolation)
+      position = interpolation.expressions
+    },
+    EmbeddedExpression(node){
+      position.push({
+        type: 'EmbeddedExpression',
+        value: node.value,
+      })
     }
   })
   return jsAST

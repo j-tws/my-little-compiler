@@ -12,6 +12,10 @@ module.exports = function traverse(ast, visitors){
       walkNodes(node.params, node)
     } else if (node.type === 'LocalVariable') {
       walkNodes(node.declarations, node)
+    } else if (node.type === 'TemplateLiteral') {
+      walkNodes(node.values, node)
+    } else if (node.type === 'StringInterpolation') {
+      walkNodes(node.expressions, node)
     }
   }
 
