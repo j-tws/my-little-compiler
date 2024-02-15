@@ -28,4 +28,15 @@ describe('Ruby to JS compiler', () => {
     
     expect(compiler(rubyCode)).toBe(jsCode)
   })
+
+  it('should correctly compile if only statement', () => {
+    const rubyCode = `if true
+      'hello world'
+    end`
+    const jsCode = `if (true){
+      return 'hello world'
+    }`
+    
+    expect(compiler(rubyCode)).toBe(jsCode)
+  })
 })

@@ -62,16 +62,36 @@ module.exports = function tokenizer(input) {
       continue
     }
 
+    if (char === '\n'){
+      tokens.push({
+        type: 'newLine',
+      })
+    }
+
     if (LETTERS.test(char)){
       let value = ''
-      while (LETTERS.test(char)){
+      while (LETTERS.test(char) && char){
         value += char
         char = input[++current]
       }
-      tokens.push({
-        type: 'name',
-        value
-      })
+
+      if (value === 'if'){
+        tokens.push({
+          type: 'ifStatement',
+          value
+        })
+      } else if (value === 'end'){
+        tokens.push({
+          type: 'endStatement',
+          value
+        })
+      } else {
+        tokens.push({
+          type: 'name',
+          value
+        })
+      }
+
       continue
     }
 

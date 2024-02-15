@@ -3,7 +3,6 @@ module.exports = function generateCode(node){
     return node.value
   }
   if (node.type === 'StringLiteral') {
-    console.log(node)
     return `'${node.value}'`
   }
   if (node.type === 'Identifier') {
