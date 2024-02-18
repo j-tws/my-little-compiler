@@ -1,5 +1,5 @@
 module.exports = function traverse(ast, visitors){
-  function walkNode(node, parent){
+  const walkNode = (node, parent) => {
     const method = visitors[node.type]
 
     if (method) {
@@ -16,10 +16,14 @@ module.exports = function traverse(ast, visitors){
       walkNodes(node.values, node)
     } else if (node.type === 'StringInterpolation') {
       walkNodes(node.expressions, node)
+    } else if (node.type === 'IfStatementTest'){
+      walkNodes(node.test)
+    } else if (node.type === 'IfStatementBlock'){
+      walkNodes(node.block)
     }
   }
 
-  function walkNodes(nodes, parent){
+  const walkNodes = (nodes, parent) => {
     nodes.forEach(node => walkNode(node, parent))
   }
 

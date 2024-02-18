@@ -8,7 +8,7 @@ module.exports = function transformer(originalAST) {
 
   let position = jsAST.body
 
-  traverse(originalAST, {
+  const visitors = {
     NumberLiteral(node) {
       position.push({
         type: 'NumericLiteral',
@@ -73,7 +73,40 @@ module.exports = function transformer(originalAST) {
         type: 'EmbeddedExpression',
         value: node.value,
       })
+    },
+    BooleanLiteral(node){
+      position.push({
+        type: 'BooleanLiteral',
+        value: node.value,
+      })
+    },
+  }
+
+  const ifStatementVisitor = {
+    IfStatement(node){
+      const testNode = { type: 'IfStatementTest', test: [...node.test] }
+      const blockNode = { type: 'IfStatementBlock', block: [...node.block] }
+      
+      let statement = {
+        type: 'IfStatement',
+        test: [],
+        block: []
+      }
+
+      const prevPosition = position
+
+      position.push(statement)
+      position = statement.test
+      traverse(testNode, visitors)
+      
+      position = statement.block
+      traverse(blockNode, visitors)
+      
+      position = prevPosition
     }
-  })
+  }
+
+  traverse(originalAST, {...visitors, ...ifStatementVisitor})
+  console.log('jsAST:', jsAST.body[0])
   return jsAST
 }

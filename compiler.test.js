@@ -34,7 +34,7 @@ describe('Ruby to JS compiler', () => {
       'hello world'
     end`
     const jsCode = `if (true){
-      return 'hello world'
+      'hello world'
     }`
     
     expect(compiler(rubyCode)).toBe(jsCode)

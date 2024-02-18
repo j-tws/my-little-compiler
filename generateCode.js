@@ -36,4 +36,16 @@ module.exports = function generateCode(node){
     })
     return '`' + output + '`'
   }
+  if (node.type === 'BooleanLiteral'){
+    return `${node.value}`
+  }
+  if (node.type === 'IfStatement'){
+    let condition = `if (${node.test.map(generateCode)}){`
+
+    let block = `${node.block.map(generateCode)}`
+
+    return `${condition}
+      ${block}
+    }`
+  }
 }

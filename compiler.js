@@ -12,10 +12,10 @@ module.exports = function compiler(input) {
   // 2. Syntactic Analysis
   //    Transforms the tokens (array of objects) into an AST (tree of objects)
   //    which represents our program
-  const lispAST = parser(tokens)
+  const rubyAST = parser(tokens)
 
   // 3. Transformation - Transform our original List AST into Javascript AST
-  const jsAST = transformer(lispAST)
+  const jsAST = transformer(rubyAST)
 
   // 4. Code Generation - Transforms our target AST (object of objects) into actual code (string)
   const jsCode = generateCode(jsAST)
