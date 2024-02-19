@@ -5,116 +5,115 @@ const NUMBERS = /\d/
 module.exports = function tokenizer(input) {
   const tokens = []
   let current = 0
-  while (current < input.length){
+  while (current < input.length) {
     let char = input[current]
 
-    if (char === '(' || char === ')'){
+    if (char === '(' || char === ')') {
       tokens.push({
         type: 'parenthesis',
-        value: char
+        value: char,
       })
       current++
       continue
     }
 
-    if (char === '='){
+    if (char === '=') {
       tokens.push({
         type: 'assignmentOperator',
-        value: char
+        value: char,
       })
       current++
       continue
     }
 
-    if (char === '#' && input[current + 1] === '{'){
+    if (char === '#' && input[current + 1] === '{') {
       tokens.push({
         type: 'stringInterpolation',
-        value: char
+        value: char,
       })
       current++
       continue
     }
 
-    if (char === '{' || char === '}'){
+    if (char === '{' || char === '}') {
       tokens.push({
         type: 'parenthesis',
-        value: char
+        value: char,
       })
       current++
       continue
     }
 
-    if (char === `"`){
+    if (char === `"`) {
       tokens.push({
         type: 'doubleQuote',
-        value: char
+        value: char,
       })
       current++
       continue
     }
 
-    if (char === "'"){
+    if (char === "'") {
       tokens.push({
         type: 'singleQuote',
-        value: char
+        value: char,
       })
       current++
       continue
     }
 
-    if (char === '\n'){
+    if (char === '\n') {
       tokens.push({
         type: 'newLine',
       })
     }
 
-    if (LETTERS.test(char)){
+    if (LETTERS.test(char)) {
       let value = ''
-      while (LETTERS.test(char) && char){
+      while (LETTERS.test(char) && char) {
         value += char
         char = input[++current]
       }
 
-      if (value === 'if'){
+      if (value === 'if') {
         tokens.push({
           type: 'ifStatement',
-          value
+          value,
         })
-      } else if (value === 'end'){
+      } else if (value === 'end') {
         tokens.push({
           type: 'endStatement',
-          value
+          value,
         })
       } else {
         tokens.push({
           type: 'name',
-          value
+          value,
         })
       }
 
       continue
     }
 
-    if (WHITESPACE.test(char)){
+    if (WHITESPACE.test(char)) {
       current++
       continue
     }
 
-    if (NUMBERS.test(char)){
+    if (NUMBERS.test(char)) {
       let value = ''
-      while (NUMBERS.test(char)){
+      while (NUMBERS.test(char)) {
         value += char
         char = input[++current]
       }
       tokens.push({
         type: 'number',
-        value
+        value,
       })
       continue
     }
 
     throw new TypeError(`Unknown char: ${char}`)
-
   }
   return tokens
 }

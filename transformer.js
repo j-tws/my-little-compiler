@@ -3,7 +3,7 @@ const traverse = require('./traverse')
 module.exports = function transformer(originalAST) {
   const jsAST = {
     type: 'Program',
-    body: []
+    body: [],
   }
 
   let position = jsAST.body
@@ -12,7 +12,7 @@ module.exports = function transformer(originalAST) {
     NumberLiteral(node) {
       position.push({
         type: 'NumericLiteral',
-        value: node.value
+        value: node.value,
       })
     },
     StringLiteral(node) {
@@ -26,55 +26,55 @@ module.exports = function transformer(originalAST) {
         type: 'CallExpression',
         callee: {
           type: 'Identifier',
-          name: node.name
+          name: node.name,
         },
-        arguments: []
+        arguments: [],
       }
       const prevPosition = position
       position = expression.arguments
       if (parent.type !== 'CallExpression') {
         expression = {
           type: 'ExpressionStatement',
-          expression
+          expression,
         }
       }
       prevPosition.push(expression)
     },
-    LocalVariable(node){
+    LocalVariable(node) {
       let variable = {
         type: 'VariableDeclarator',
         name: node.name,
-        declarations: []
+        declarations: [],
       }
 
       position.push(variable)
       position = variable.declarations
     },
-    TemplateLiteral(){
+    TemplateLiteral() {
       let template = {
         type: 'TemplateLiteral',
-        values: []
+        values: [],
       }
 
       position.push(template)
       position = template.values
     },
-    StringInterpolation(){
+    StringInterpolation() {
       let interpolation = {
         type: 'StringInterpolation',
-        expressions: []
+        expressions: [],
       }
 
       position.push(interpolation)
       position = interpolation.expressions
     },
-    EmbeddedExpression(node){
+    EmbeddedExpression(node) {
       position.push({
         type: 'EmbeddedExpression',
         value: node.value,
       })
     },
-    BooleanLiteral(node){
+    BooleanLiteral(node) {
       position.push({
         type: 'BooleanLiteral',
         value: node.value,
@@ -83,14 +83,14 @@ module.exports = function transformer(originalAST) {
   }
 
   const ifStatementVisitor = {
-    IfStatement(node){
+    IfStatement(node) {
       const testNode = { type: 'IfStatementTest', test: [...node.test] }
       const blockNode = { type: 'IfStatementBlock', block: [...node.block] }
-      
+
       let statement = {
         type: 'IfStatement',
         test: [],
-        block: []
+        block: [],
       }
 
       const prevPosition = position
@@ -98,15 +98,15 @@ module.exports = function transformer(originalAST) {
       position.push(statement)
       position = statement.test
       traverse(testNode, visitors)
-      
+
       position = statement.block
       traverse(blockNode, visitors)
-      
+
       position = prevPosition
-    }
+    },
   }
 
-  traverse(originalAST, {...visitors, ...ifStatementVisitor})
+  traverse(originalAST, { ...visitors, ...ifStatementVisitor })
   console.log('jsAST:', jsAST.body[0])
   return jsAST
 }

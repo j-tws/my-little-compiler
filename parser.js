@@ -9,18 +9,18 @@ module.exports = function parser(tokens) {
       current++
       return {
         type: 'NumberLiteral',
-        value: token.value
+        value: token.value,
       }
     }
 
-    if (token.type === "singleQuote"){
+    if (token.type === 'singleQuote') {
       token = tokens[++current]
       let string = ''
       insideSingleQuote = true
 
-      while (token.value !== "'"){
+      while (token.value !== "'") {
         string += token.value
-        if (tokens[current + 1].value !== "'"){
+        if (tokens[current + 1].value !== "'") {
           string += ' '
         }
         token = tokens[++current]
@@ -31,53 +31,53 @@ module.exports = function parser(tokens) {
 
       return {
         type: 'StringLiteral',
-        value: string
+        value: string,
       }
     }
 
-    if (token.type === 'name' && insideTemplateLiteral){
+    if (token.type === 'name' && insideTemplateLiteral) {
       return {
         type: 'StringLiteral',
         value: token.value,
       }
     }
 
-    if (token.type === 'doubleQuote'){
+    if (token.type === 'doubleQuote') {
       const templateLiterals = {
         type: 'TemplateLiteral',
-        values: []
+        values: [],
       }
 
       token = tokens[++current]
       insideTemplateLiteral = true
 
-      while (token.value !== `"`){
+      while (token.value !== `"`) {
         templateLiterals.values.push(walk())
         current++
         token = tokens[current]
       }
       current++
       insideTemplateLiteral = false
-      
+
       return templateLiterals
     }
 
-    if (token.type === 'stringInterpolation'){
+    if (token.type === 'stringInterpolation') {
       insideTemplateLiteral = true
 
       const interpolation = {
         type: 'StringInterpolation',
-        expressions: []
+        expressions: [],
       }
 
       current += 2
       token = tokens[current]
 
-      while (token.value !== '}'){
-        if (token.type === 'name'){
+      while (token.value !== '}') {
+        if (token.type === 'name') {
           interpolation.expressions.push({
             type: 'EmbeddedExpression',
-            value: token.value
+            value: token.value,
           })
         }
         token = tokens[++current]
@@ -87,17 +87,20 @@ module.exports = function parser(tokens) {
       return interpolation
     }
 
-    if (token.type === 'name' && tokens[current + 1].type === 'assignmentOperator') {
+    if (
+      token.type === 'name' &&
+      tokens[current + 1].type === 'assignmentOperator'
+    ) {
       const variable = {
         type: 'LocalVariable',
         name: token.value,
-        declarations: []
+        declarations: [],
       }
 
       current += 2
       token = tokens[current]
 
-      while (token){
+      while (token) {
         variable.declarations.push(walk())
         token = tokens[current]
       }
@@ -105,16 +108,16 @@ module.exports = function parser(tokens) {
       return variable
     }
 
-    if (token.type === 'parenthesis' && token.value === '('){
+    if (token.type === 'parenthesis' && token.value === '(') {
       token = tokens[++current]
       const expression = {
         type: 'CallExpression',
         name: token.value,
-        params: []
+        params: [],
       }
 
       token = tokens[++current]
-      while (token.value !== ')'){
+      while (token.value !== ')') {
         expression.params.push(walk())
         token = tokens[current]
       }
@@ -122,30 +125,30 @@ module.exports = function parser(tokens) {
       return expression
     }
 
-    if (token.value === 'true' && !insideSingleQuote){
+    if (token.value === 'true' && !insideSingleQuote) {
       return {
         type: 'BooleanLiteral',
-        value: true
+        value: true,
       }
     }
 
-    if (token.type === 'ifStatement'){
+    if (token.type === 'ifStatement') {
       const ifStatement = {
         type: 'IfStatement',
         test: [],
-        block: []
+        block: [],
       }
 
       token = tokens[++current]
-      
-      while (token.type !== 'newLine'){
+
+      while (token.type !== 'newLine') {
         ifStatement.test.push(walk())
         token = tokens[++current]
       }
-      
+
       token = tokens[++current]
 
-      while (token.type !== 'endStatement'){
+      while (token.type !== 'endStatement') {
         ifStatement.block.push(walk())
         token = tokens[++current]
       }
@@ -160,7 +163,7 @@ module.exports = function parser(tokens) {
 
   const ast = {
     type: 'Program',
-    body: [walk()]
+    body: [walk()],
   }
   console.log(ast.body[0])
 

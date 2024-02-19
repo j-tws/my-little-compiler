@@ -1,4 +1,4 @@
-module.exports = function generateCode(node){
+module.exports = function generateCode(node) {
   if (node.type === 'NumericLiteral') {
     return node.value
   }
@@ -18,17 +18,19 @@ module.exports = function generateCode(node){
     return `let ${node.name} = ${node.declarations.map(generateCode)}`
   }
   if (node.type === 'Program') {
-    return node.body.map(generateCode).join('\n');
+    return node.body.map(generateCode).join('\n')
   }
   if (node.type === 'TemplateLiteral') {
     let output = ''
     node.values.forEach((value, index) => {
-      if (value.type === 'StringLiteral'){
+      if (value.type === 'StringLiteral') {
         output += value.value
         if (node.values[index + 1]) output += ' '
       } else {
         let interpolation = '${'
-        value.expressions.forEach(expression => interpolation += expression.value)
+        value.expressions.forEach(
+          (expression) => (interpolation += expression.value)
+        )
         interpolation += '}'
         output += interpolation
         if (node.values[index + 1]) output += ' '
@@ -36,10 +38,10 @@ module.exports = function generateCode(node){
     })
     return '`' + output + '`'
   }
-  if (node.type === 'BooleanLiteral'){
+  if (node.type === 'BooleanLiteral') {
     return `${node.value}`
   }
-  if (node.type === 'IfStatement'){
+  if (node.type === 'IfStatement') {
     let condition = `if (${node.test.map(generateCode)}){`
 
     let block = `${node.block.map(generateCode)}`

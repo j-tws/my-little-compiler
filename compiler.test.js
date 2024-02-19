@@ -11,21 +11,21 @@ describe('Ruby to JS compiler', () => {
   it('should correctly compile simple string variable assignment', () => {
     const rubyCode = "text = 'hello world'"
     const jsCode = "let text = 'hello world'"
-    
+
     expect(compiler(rubyCode)).toBe(jsCode)
   })
 
   it('should correctly compile simple integer variable assignment', () => {
-    const rubyCode = "number = 50"
-    const jsCode = "let number = 50"
-    
+    const rubyCode = 'number = 50'
+    const jsCode = 'let number = 50'
+
     expect(compiler(rubyCode)).toBe(jsCode)
   })
 
   it('should correctly compile string interpolation variable assignment', () => {
     const rubyCode = `greeting = "hello #{name}"`
-    const jsCode = "let greeting = `hello ${name}`"
-    
+    const jsCode = 'let greeting = `hello ${name}`'
+
     expect(compiler(rubyCode)).toBe(jsCode)
   })
 
@@ -36,7 +36,7 @@ describe('Ruby to JS compiler', () => {
     const jsCode = `if (true){
       'hello world'
     }`
-    
+
     expect(compiler(rubyCode)).toBe(jsCode)
   })
 })
