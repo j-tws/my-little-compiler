@@ -162,6 +162,7 @@ module.exports = function parser(tokens) {
     type: 'Program',
     body: [walk()]
   }
+  console.log(ast.body[0])
 
   return ast
 }
