@@ -21,7 +21,7 @@ module.exports = function generateCode(node) {
     return node.body.map(generateCode).join('\n')
   }
   if (node.type === 'TemplateLiteral') {
-    const output = node.values.map(node => {
+    const output = node.values.map((node) => {
       if (node.type === 'StringLiteral') {
         return node.value
       } else {

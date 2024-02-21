@@ -17,7 +17,7 @@ module.exports = function parser(tokens) {
       current++
       return {
         type: 'StringLiteral',
-        value: token.value
+        value: token.value,
       }
     }
 
@@ -26,10 +26,10 @@ module.exports = function parser(tokens) {
         type: 'TemplateLiteral',
         values: [],
       }
-      
+
       token = tokens[++current]
       insideTemplateLiteral = true
-      
+
       while (token && token.value !== `"`) {
         templateLiterals.values.push(walk())
         token = tokens[current]
@@ -76,8 +76,11 @@ module.exports = function parser(tokens) {
       }
 
       token = tokens[++current]
-      
-      while (token.type === 'singleQuote' || token.type === 'assignmentOperator'){
+
+      while (
+        token.type === 'singleQuote' ||
+        token.type === 'assignmentOperator'
+      ) {
         token = tokens[++current]
       }
 
@@ -137,7 +140,12 @@ module.exports = function parser(tokens) {
       return ifStatement
     }
 
-    if (token.type === 'newLine' || token.type === 'endStatement' || token.type === 'singleQuote') return
+    if (
+      token.type === 'newLine' ||
+      token.type === 'endStatement' ||
+      token.type === 'singleQuote'
+    )
+      return
 
     throw new TypeError(`Unknown token: '${token.type}'`)
   }

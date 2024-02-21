@@ -82,7 +82,7 @@ module.exports = function tokenizer(input) {
         }
         tokens.push({
           type: 'string',
-          value
+          value,
         })
         continue
       }
