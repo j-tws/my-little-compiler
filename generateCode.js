@@ -1,5 +1,5 @@
 module.exports = function generateCode(node) {
-  if (node.type === 'NumericLiteral') {
+  if (node.type === 'NumericLiteral' || node.type === 'EmbeddedExpression') {
     return node.value
   }
   if (node.type === 'StringLiteral') {
@@ -21,22 +21,15 @@ module.exports = function generateCode(node) {
     return node.body.map(generateCode).join('\n')
   }
   if (node.type === 'TemplateLiteral') {
-    let output = ''
-    node.values.forEach((value, index) => {
-      if (value.type === 'StringLiteral') {
-        output += value.value
-        if (node.values[index + 1]) output += ' '
+    const output = node.values.map(node => {
+      if (node.type === 'StringLiteral') {
+        return node.value
       } else {
-        let interpolation = '${'
-        value.expressions.forEach(
-          (expression) => (interpolation += expression.value)
-        )
-        interpolation += '}'
-        output += interpolation
-        if (node.values[index + 1]) output += ' '
+        return '${' + node.expressions.map(generateCode).join('') + '}'
       }
     })
-    return '`' + output + '`'
+
+    return '`' + output.join('') + '`'
   }
   if (node.type === 'BooleanLiteral') {
     return `${node.value}`

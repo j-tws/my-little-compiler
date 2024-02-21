@@ -5,6 +5,7 @@ const NUMBERS = /\d/
 module.exports = function tokenizer(input) {
   const tokens = []
   let current = 0
+  let stringFlag = false
   while (current < input.length) {
     let char = input[current]
 
@@ -36,6 +37,7 @@ module.exports = function tokenizer(input) {
     }
 
     if (char === '{' || char === '}') {
+      stringFlag = !stringFlag
       tokens.push({
         type: 'parenthesis',
         value: char,
@@ -45,6 +47,7 @@ module.exports = function tokenizer(input) {
     }
 
     if (char === `"`) {
+      stringFlag = !stringFlag
       tokens.push({
         type: 'doubleQuote',
         value: char,
@@ -54,6 +57,7 @@ module.exports = function tokenizer(input) {
     }
 
     if (char === "'") {
+      stringFlag = !stringFlag
       tokens.push({
         type: 'singleQuote',
         value: char,
@@ -70,6 +74,19 @@ module.exports = function tokenizer(input) {
 
     if (LETTERS.test(char)) {
       let value = ''
+
+      if (stringFlag) {
+        while (char !== '#' && char !== "'") {
+          value += char
+          char = input[++current]
+        }
+        tokens.push({
+          type: 'string',
+          value
+        })
+        continue
+      }
+
       while (LETTERS.test(char) && char) {
         value += char
         char = input[++current]
@@ -115,5 +132,6 @@ module.exports = function tokenizer(input) {
 
     throw new TypeError(`Unknown char: ${char}`)
   }
+  console.log('tokens:', tokens)
   return tokens
 }

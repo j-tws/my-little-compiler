@@ -107,6 +107,5 @@ module.exports = function transformer(originalAST) {
   }
 
   traverse(originalAST, { ...visitors, ...ifStatementVisitor })
-  console.log('jsAST:', jsAST.body[0])
   return jsAST
 }
