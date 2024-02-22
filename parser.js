@@ -1,6 +1,5 @@
 module.exports = function parser(tokens) {
   let current = 0
-  let insideTemplateLiteral = false
 
   const walk = () => {
     let token = tokens[current]
@@ -21,6 +20,14 @@ module.exports = function parser(tokens) {
       }
     }
 
+    if (token.type === 'boolean') {
+      current++
+      return {
+        type: 'BooleanLiteral',
+        value: token.value,
+      }
+    }
+
     if (token.type === 'doubleQuote') {
       const templateLiterals = {
         type: 'TemplateLiteral',
@@ -28,21 +35,17 @@ module.exports = function parser(tokens) {
       }
 
       token = tokens[++current]
-      insideTemplateLiteral = true
 
       while (token && token.value !== `"`) {
         templateLiterals.values.push(walk())
         token = tokens[current]
       }
       current++
-      insideTemplateLiteral = false
 
       return templateLiterals
     }
 
     if (token.type === 'stringInterpolation') {
-      insideTemplateLiteral = true
-
       const interpolation = {
         type: 'StringInterpolation',
         expressions: [],
@@ -60,7 +63,6 @@ module.exports = function parser(tokens) {
         token = tokens[++current]
       }
       current++
-      insideTemplateLiteral = false
 
       return interpolation
     }
@@ -109,13 +111,6 @@ module.exports = function parser(tokens) {
       return expression
     }
 
-    // if (token.value === 'true' && !insideSingleQuote) {
-    //   return {
-    //     type: 'BooleanLiteral',
-    //     value: true,
-    //   }
-    // }
-
     if (token.type === 'ifStatement') {
       const ifStatement = {
         type: 'IfStatement',
@@ -123,29 +118,28 @@ module.exports = function parser(tokens) {
         block: [],
       }
 
+      
       token = tokens[++current]
-
+      
       while (token.type !== 'newLine') {
         ifStatement.test.push(walk())
-        token = tokens[++current]
+        token = tokens[current]
       }
-
+      
       token = tokens[++current]
-
+      
       while (token.type !== 'endStatement') {
+        if (token.type === 'singleQuote' || token.type === 'newLine') {
+          token = tokens[++current]
+          continue
+        }
+
         ifStatement.block.push(walk())
-        token = tokens[++current]
+        token = tokens[current]
       }
 
       return ifStatement
     }
-
-    if (
-      token.type === 'newLine' ||
-      token.type === 'endStatement' ||
-      token.type === 'singleQuote'
-    )
-      return
 
     throw new TypeError(`Unknown token: '${token.type}'`)
   }

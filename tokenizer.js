@@ -102,6 +102,11 @@ module.exports = function tokenizer(input) {
           type: 'endStatement',
           value,
         })
+      } else if (value === 'true' || value === 'false') {
+        tokens.push({
+          type: 'boolean',
+          value,
+        })
       } else {
         tokens.push({
           type: 'name',
